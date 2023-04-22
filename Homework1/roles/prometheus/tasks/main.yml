@@ -42,8 +42,8 @@
       dest: '/etc/prometheus/'
 
 - name: create Prometheus configuration files
-  template:
-    src: templates/prometheus.yml
+  copy:
+    src: ../../GAP-1/prometheus.yml
     dest: /etc/prometheus/
 
 - name: copy systemd service file

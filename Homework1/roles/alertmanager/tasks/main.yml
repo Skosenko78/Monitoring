@@ -32,7 +32,7 @@
 
 - name: copy alertmanager configuration file
   copy:
-    src: files/alertmanager.yml
+    src: ../../GAP-1/alertmanager.yml
     dest: /etc/alertmanager/
   notify:
     - alertmanager service restart
