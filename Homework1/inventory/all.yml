@@ -1,0 +1,15 @@
+all:
+  hosts:
+    CMS:
+      ansible_host: 10.0.0.41
+      ansible_ssh_private_key_file: ".vagrant/machines/CMS/virtualbox/private_key"      
+    Monitoring:
+      ansible_host: 10.0.0.42
+      ansible_ssh_private_key_file: ".vagrant/machines/Monitoring/virtualbox/private_key"
+  vars:
+    ansible_user: 'vagrant'
+    ansible_host_key_checking: false
+    wordpress_db_name: 'wordpress'
+    wordpress_db_user: 'wordpress'
+    wordpress_db_pass: 'wordpress'
+  

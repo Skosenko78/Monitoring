@@ -1,0 +1,53 @@
+---
+- name: create node_exporter user
+  user:
+    name: "nodeexporter"
+    shell: /usr/sbin/nologin
+    system: yes
+    create_home: no
+
+- name: create node_exporter config dir
+  file:
+    path: "/etc/node_exporter"
+    state: directory
+    owner: "nodeexporter"
+    group: "nodeexporter"
+
+- name: download and unzip node_exporter if not exist
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+    creates: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"
+    validate_certs: no
+
+- name: move the binary to the destination
+  copy:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+    dest: "/usr/local/bin/node_exporter"
+    owner: "nodeexporter"
+    group: "nodeexporter"
+    mode: preserve
+    remote_src: yes
+
+- name: copy node_exporter service file
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: 0755
+  notify: service reload
+
+- name: node_exporter service start
+  systemd:
+    name: node_exporter
+    state: started
+    enabled: yes
+
+- name: verify node_exporter is responding to requests.
+  uri:
+    url: http://localhost:9100/
+    return_content: true
+  register: metrics_output
+  failed_when: "'Metrics' not in metrics_output.content"

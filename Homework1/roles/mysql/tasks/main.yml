@@ -1,0 +1,27 @@
+---
+- name: install Mysql packages
+  apt:
+    name: 
+      - mysql-server
+      - python3-mysqldb
+    state: latest
+    update_cache: yes
+
+- name: start and enable mysql service
+  systemd:
+    name: mysql
+    state: started
+    enabled: yes
+
+- name: create {{ wordpress_db_name }} database
+  mysql_db:
+    name: "{{ wordpress_db_name }}"
+    state: present
+
+- name: create mysql user
+  mysql_user:
+    name: "{{ wordpress_db_user }}"
+    password: "{{ wordpress_db_pass }}"
+    priv: "{{ wordpress_db_name }}.*:ALL"
+    host: '%'
+    state: present

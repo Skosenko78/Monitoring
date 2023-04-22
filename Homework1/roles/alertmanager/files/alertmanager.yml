@@ -1,0 +1,20 @@
+global:
+route:
+  group_by: ['alertname']
+  group_wait: 1m
+  group_interval: 3m
+  repeat_interval: 1h
+  receiver: 'team-telegram'
+  routes:
+    - receiver: 'team-telegram'
+receivers:
+  - name: 'team-telegram'
+    telegram_configs:
+      - bot_token: '5676249300:AAFHrxINN7Elqd1O8cHebya6mpgoPLEmuSA'
+        chat_id: -1001607389994       
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']

@@ -1,0 +1,52 @@
+---
+- name: install Nginx and PHP Packages
+  apt: 
+    name: ['nginx', 'php-fpm', 'php-mysql']
+    update_cache: yes
+    state: latest
+
+- name: install PHP Extensions
+  apt:
+    name: ['php-curl', 'php-gd', 'php-mbstring', 'php-soap', 'php-xml', 'php-xmlrpc', 'php-zip']
+    state: latest
+  notify: Restart php-fpm
+
+- name: create Nginx config for wp
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/wp
+  notify: Restart Nginx
+
+- name: enable wp site
+  file:
+     src: /etc/nginx/sites-available/wp
+     dest: /etc/nginx/sites-enabled/wp
+     state: link
+  notify: Restart Nginx
+
+- name: disable default Nginx site
+  file:
+     dest: /etc/nginx/sites-enabled/default
+     state: absent
+  notify: Restart Nginx
+
+- name: download and unpack latest WordPress
+  unarchive:
+    src: "https://wordpress.org/latest.tar.gz"
+    dest: "/var/www"
+    remote_src: yes
+    creates: "/var/www/wordpress"
+
+- name: set ownership
+  file:
+    path: "/var/www/wordpress"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+
+- name: set up wp-config
+  template:
+    src: "templates/wp-config.php.j2"
+    dest: "/var/www/wordpress/wp-config.php"
+

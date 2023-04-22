@@ -1,0 +1,19 @@
+---
+- name: "CMS provision"
+  hosts: CMS
+  become: yes
+  gather_facts: no
+  roles:
+    - mysql
+    - wordpress
+    - node_exporter
+    - mysqld_exporter
+
+- name: "Monitoring provision"
+  hosts: Monitoring
+  become: yes
+  gather_facts: no
+  roles:
+    - prometheus
+    - alertmanager
+...
