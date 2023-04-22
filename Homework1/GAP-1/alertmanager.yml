@@ -10,7 +10,7 @@ route:
 receivers:
   - name: 'team-telegram'
     telegram_configs:
-      - bot_token: '5676249300:AAFHrxINN7Elqd1O8cHebya6mpgoPLEmuSA'
+      - bot_token: ''
         chat_id: -1001607389994       
 inhibit_rules:
   - source_match:
