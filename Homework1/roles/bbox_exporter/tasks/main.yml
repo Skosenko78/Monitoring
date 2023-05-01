@@ -1,0 +1,47 @@
+---
+- name: create blackbox_exporter config dir
+  file:
+    path: "{{ bbox_exporter_conf_dir }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+
+- name: download and unzip blackbox_exporter if not exist
+  unarchive:
+    src: "https://github.com/prometheus/blackbox_exporter/releases/download/v{{ bbox_exporter_version }}/blackbox_exporter-{{ bbox_exporter_version }}.linux-amd64.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+    creates: "/tmp/blackbox_exporter-{{ bbox_exporter_version }}.linux-amd64"
+    validate_certs: no
+
+- name: move the binary to the destination
+  copy:
+    src: "/tmp/blackbox_exporter-{{ bbox_exporter_version }}.linux-amd64/blackbox_exporter"
+    dest: "{{ bbox_exporter_bin }}"
+    owner: prometheus
+    group: prometheus
+    mode: preserve
+    remote_src: yes
+
+- name: copy blackbox_exporter config file to the destination
+  copy:
+    src: files/blackbox.yml
+    dest: "{{ bbox_exporter_conf_dir }}"
+    owner: prometheus
+    group: prometheus
+    mode: preserve
+
+- name: copy balckbox_exporter service file
+  template:
+    src: blackbox_exporter.service.j2
+    dest: /etc/systemd/system/blackbox_exporter.service
+    owner: root
+    group: root
+    mode: 0755
+  notify: service reload
+
+- name: blackbox_exporter service restart
+  systemd:
+    name: blackbox_exporter
+    state: restarted
+    enabled: yes

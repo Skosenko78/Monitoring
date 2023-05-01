@@ -16,4 +16,6 @@
   roles:
     - prometheus
     - alertmanager
+    - bbox_exporter
+    - node_exporter
 ...

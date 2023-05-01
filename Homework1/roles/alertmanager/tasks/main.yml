@@ -31,7 +31,7 @@
       dest: '/usr/local/bin/'
 
 - name: copy alertmanager configuration file
-  copy:
+  template:
     src: ../../GAP-1/alertmanager.yml
     dest: /etc/alertmanager/
   notify:

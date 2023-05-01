@@ -1,0 +1,4 @@
+---
+bbox_exporter_version: "0.23.0"
+bbox_exporter_bin: /usr/local/bin/blackbox_exporter
+bbox_exporter_conf_dir: /etc/blackbox_exporter

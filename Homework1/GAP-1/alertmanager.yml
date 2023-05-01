@@ -10,8 +10,8 @@ route:
 receivers:
   - name: 'team-telegram'
     telegram_configs:
-      - bot_token: ''
-        chat_id: -1001607389994       
+      - bot_token: {{ lookup('env', 'BOT_TOKEN') }}
+        chat_id: {{ lookup('env', 'BOT_CHAT_ID') }}       
 inhibit_rules:
   - source_match:
       severity: 'critical'
